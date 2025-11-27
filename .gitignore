@@ -1,0 +1,54 @@
+# Ignorar archivos del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignorar archivos de desarrollo
+*.log
+error_log
+.env
+.env.local
+.env.production
+
+# Ignorar imágenes subidas por usuarios
+uploads/*
+!uploads/.gitkeep
+
+# Ignorar archivos temporales
+tmp/
+temp/
+cache/
+sessions/
+
+# Ignorar archivos de configuración local
+config/database_local.php
+config/config_local.php
+
+# Ignorar archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignorar dependencias
+vendor/
+composer.lock
+node_modules/
+package-lock.json
+
+# Ignorar archivos de prueba
+tests/coverage/
+.phpunit.result.cache
+
+# Ignorar archivos de deployment
+deploy.sh
+
+# Ignorar backups
+*.sql.gz
+*.sql.bak
+backups/
