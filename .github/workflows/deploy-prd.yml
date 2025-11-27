@@ -36,9 +36,9 @@ jobs:
           fi
 
           # Update .htaccess with production environment variables
-          sed -i 's/SetEnv DB_NAME ".*"/SetEnv DB_NAME "${{ secrets.DB_NAME }}"/' .htaccess
-          sed -i 's/SetEnv DB_USER ".*"/SetEnv DB_USER "${{ secrets.DB_USER_STORE }}"/' .htaccess
-          sed -i 's/SetEnv DB_PASSWORD ".*"/SetEnv DB_PASSWORD "${{ secrets.DB_PASSWORD_STORE }}"/' .htaccess
+          sed -i 's/SetEnv DB_NAME ".*"/SetEnv DB_NAME "${{ secrets.DB_NAME_PRD }}"/' .htaccess
+          sed -i 's/SetEnv DB_USER ".*"/SetEnv DB_USER "${{ secrets.DB_USER_PRD }}"/' .htaccess
+          sed -i 's/SetEnv DB_PASSWORD ".*"/SetEnv DB_PASSWORD "${{ secrets.DB_PASSWORD_PRD }}"/' .htaccess
           sed -i 's/SetEnv APP_URL ".*"/SetEnv APP_URL "https:\/\/kyoshop.co"/' .htaccess
           sed -i 's/SetEnv WHATSAPP_NUMBER ".*"/SetEnv WHATSAPP_NUMBER "${{ secrets.WHATSAPP_NUMBER }}"/' .htaccess
           sed -i 's/SetEnv EPAYCO_PUBLIC_KEY ".*"/SetEnv EPAYCO_PUBLIC_KEY "${{ secrets.EPAYCO_PUBLIC_KEY }}"/' .htaccess

@@ -22,7 +22,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd ${{ secrets.DEPLOY_PATH_STORE_DEV }}
+          cd ${{ secrets.DEPLOY_PATH_DEV }}
 
           # Check if git repo exists, if not clone it
           if [ ! -d ".git" ]; then
@@ -39,8 +39,8 @@ jobs:
 
           # Update .htaccess with development environment variables
           sed -i 's/SetEnv DB_NAME ".*"/SetEnv DB_NAME "${{ secrets.DB_NAME_DEV }}"/' .htaccess
-          sed -i 's/SetEnv DB_USER ".*"/SetEnv DB_USER "${{ secrets.DB_USER_STORE_DEV }}"/' .htaccess
-          sed -i 's/SetEnv DB_PASSWORD ".*"/SetEnv DB_PASSWORD "${{ secrets.DB_PASSWORD_STORE_DEV }}"/' .htaccess
+          sed -i 's/SetEnv DB_USER ".*"/SetEnv DB_USER "${{ secrets.DB_USER_DEV }}"/' .htaccess
+          sed -i 's/SetEnv DB_PASSWORD ".*"/SetEnv DB_PASSWORD "${{ secrets.DB_PASSWORD_DEV }}"/' .htaccess
           sed -i 's/SetEnv APP_URL ".*"/SetEnv APP_URL "https:\/\/dev.kyoshop.co"/' .htaccess
           sed -i 's/SetEnv WHATSAPP_NUMBER ".*"/SetEnv WHATSAPP_NUMBER "${{ secrets.WHATSAPP_NUMBER }}"/' .htaccess
           sed -i 's/SetEnv EPAYCO_PUBLIC_KEY ".*"/SetEnv EPAYCO_PUBLIC_KEY "${{ secrets.EPAYCO_PUBLIC_KEY_TEST }}"/' .htaccess
