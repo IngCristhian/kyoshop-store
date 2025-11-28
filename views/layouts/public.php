@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/store.css">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="<?= APP_URL ?>/assets/img/favicon.ico">
+    <link rel="icon" type="image/png" href="<?= APP_URL ?>/assets/img/favicon.png">
 </head>
 <body class="modern-store">
     <!-- Modern Navbar with Blur Effect -->
@@ -30,9 +30,7 @@
             <div class="nav-wrapper">
                 <!-- Logo -->
                 <a class="brand-logo" href="<?= APP_URL ?>">
-                    <div class="logo-icon">
-                        <i class="bi bi-bag-heart-fill"></i>
-                    </div>
+                    <img src="<?= APP_URL ?>/assets/img/logo.png" alt="KyoShop" class="logo-image">
                     <span class="brand-name">KyoShop</span>
                 </a>
 
@@ -110,9 +108,7 @@
                     <div class="col-lg-4">
                         <div class="footer-brand">
                             <div class="brand-logo mb-3">
-                                <div class="logo-icon">
-                                    <i class="bi bi-bag-heart-fill"></i>
-                                </div>
+                                <img src="<?= APP_URL ?>/assets/img/logo.png" alt="KyoShop" class="logo-image">
                                 <span class="brand-name">KyoShop</span>
                             </div>
                             <p class="footer-desc">

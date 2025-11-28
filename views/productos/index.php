@@ -1,12 +1,51 @@
 <!-- Hero Section -->
-<div class="catalog-hero">
+<div class="catalog-hero-v2">
+    <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
     <div class="container">
-        <div class="hero-content animate-on-scroll">
-            <h1 class="hero-title">
-                <span class="gradient-text">Descubre</span> tu estilo
+        <div class="hero-content-v2 animate-on-scroll">
+            <div class="hero-badge">
+                <i class="bi bi-stars"></i>
+                <span>Nueva Colección</span>
+            </div>
+            <h1 class="hero-title-v2">
+                <span class="gradient-text">Descubre</span> tu estilo único
             </h1>
-            <p class="hero-subtitle">Explora nuestra colección exclusiva de moda contemporánea</p>
+            <p class="hero-subtitle-v2">
+                Moda contemporánea que refleja tu personalidad. Calidad premium, diseños exclusivos.
+            </p>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number"><?= $totalProductos ?? 0 ?></div>
+                    <div class="stat-label">Productos</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number"><i class="bi bi-truck"></i></div>
+                    <div class="stat-label">Envío Gratis</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <div class="stat-number"><i class="bi bi-shield-check"></i></div>
+                    <div class="stat-label">Compra Segura</div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="hero-cta">
+                <a href="#productos" class="btn-hero-primary">
+                    <span>Explorar Colección</span>
+                    <i class="bi bi-arrow-down"></i>
+                </a>
+            </div>
         </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-mouse"></div>
     </div>
 </div>
 
@@ -38,6 +77,7 @@
     </div>
 
     <!-- Products Grid -->
+    <div id="productos"></div>
     <?php if (empty($productos)): ?>
         <div class="empty-state animate-on-scroll">
             <div class="empty-state-icon">
