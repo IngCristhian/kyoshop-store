@@ -52,3 +52,4 @@ deploy.sh
 *.sql.gz
 *.sql.bak
 backups/
+uploads/

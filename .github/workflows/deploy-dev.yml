@@ -42,15 +42,20 @@ jobs:
           sed -i 's/SetEnv DB_USER ".*"/SetEnv DB_USER "${{ secrets.DB_USER_DEV }}"/' .htaccess
           sed -i 's/SetEnv DB_PASSWORD ".*"/SetEnv DB_PASSWORD "${{ secrets.DB_PASSWORD_DEV }}"/' .htaccess
           sed -i 's/SetEnv APP_URL ".*"/SetEnv APP_URL "https:\/\/dev.kyoshop.co"/' .htaccess
+          sed -i 's/SetEnv ADMIN_URL ".*"/SetEnv ADMIN_URL "https:\/\/dev.inventory.kyoshop.co"/' .htaccess
           sed -i 's/SetEnv WHATSAPP_NUMBER ".*"/SetEnv WHATSAPP_NUMBER "${{ secrets.WHATSAPP_NUMBER }}"/' .htaccess
           sed -i 's/SetEnv EPAYCO_PUBLIC_KEY ".*"/SetEnv EPAYCO_PUBLIC_KEY "${{ secrets.EPAYCO_PUBLIC_KEY_TEST }}"/' .htaccess
           sed -i 's/SetEnv EPAYCO_PRIVATE_KEY ".*"/SetEnv EPAYCO_PRIVATE_KEY "${{ secrets.EPAYCO_PRIVATE_KEY_TEST }}"/' .htaccess
           sed -i 's/SetEnv EPAYCO_TEST_MODE ".*"/SetEnv EPAYCO_TEST_MODE "true"/' .htaccess
 
           # Set proper file permissions
-          chmod 755 uploads/
           chmod 644 config/*.php
           chmod 644 .htaccess
+
+          # Create symlink to inventory uploads (for faster image loading)
+          echo "🔗 Creating symlink to inventory uploads..."
+          ln -sf ~/dev.inventory.kyoshop.co/uploads uploads
+          ls -la uploads
 
           # Clear cache if exists
           rm -rf cache/*
