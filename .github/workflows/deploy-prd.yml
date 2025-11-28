@@ -47,9 +47,13 @@ jobs:
           sed -i 's/SetEnv EPAYCO_TEST_MODE ".*"/SetEnv EPAYCO_TEST_MODE "false"/' .htaccess
 
           # Set proper file permissions
-          chmod 755 uploads/
           chmod 644 config/*.php
           chmod 644 .htaccess
+
+          # Create symlink to inventory uploads (for faster image loading)
+          echo "🔗 Creating symlink to inventory uploads..."
+          ln -sf ~/inventory.kyoshop.co/uploads uploads
+          ls -la uploads
 
           # Clear cache if exists
           rm -rf cache/*
