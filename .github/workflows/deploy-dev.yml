@@ -54,7 +54,7 @@ jobs:
 
           # Create symlink to inventory uploads (for faster image loading)
           echo "🔗 Creating symlink to inventory uploads..."
-          rm -rf uploads
+          rm -rf uploads 2>/dev/null || true
           ln -sf ~/dev.inventory.kyoshop.co/uploads uploads
           ls -la uploads
 
