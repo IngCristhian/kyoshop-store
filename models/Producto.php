@@ -26,13 +26,18 @@ class Producto {
 
         $sql = "SELECT
                     id,
-                    codigo,
+                    codigo_producto,
                     nombre,
                     descripcion,
                     precio,
                     stock,
                     imagen,
-                    categoria_id,
+                    imagen_modelo,
+                    categoria,
+                    tipo,
+                    talla,
+                    color,
+                    ubicacion,
                     activo,
                     fecha_creacion
                 FROM productos
@@ -62,13 +67,18 @@ class Producto {
     public function obtenerPorId($id) {
         $sql = "SELECT
                     id,
-                    codigo,
+                    codigo_producto,
                     nombre,
                     descripcion,
                     precio,
                     stock,
                     imagen,
-                    categoria_id,
+                    imagen_modelo,
+                    categoria,
+                    tipo,
+                    talla,
+                    color,
+                    ubicacion,
                     activo,
                     fecha_creacion
                 FROM productos
@@ -95,13 +105,18 @@ class Producto {
 
         $sql = "SELECT
                     id,
-                    codigo,
+                    codigo_producto,
                     nombre,
                     descripcion,
                     precio,
                     stock,
                     imagen,
-                    categoria_id,
+                    imagen_modelo,
+                    categoria,
+                    tipo,
+                    talla,
+                    color,
+                    ubicacion,
                     activo,
                     fecha_creacion
                 FROM productos
@@ -137,24 +152,29 @@ class Producto {
 
         $sql = "SELECT
                     id,
-                    codigo,
+                    codigo_producto,
                     nombre,
                     descripcion,
                     precio,
                     stock,
                     imagen,
-                    categoria_id,
+                    imagen_modelo,
+                    categoria,
+                    tipo,
+                    talla,
+                    color,
+                    ubicacion,
                     activo,
                     fecha_creacion
                 FROM productos
                 WHERE activo = 1
-                  AND categoria_id = :categoria_id
+                  AND categoria = :categoria
                 ORDER BY fecha_creacion DESC
                 LIMIT :limit OFFSET :offset";
 
         try {
             $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->bindValue(':categoria_id', $categoriaId, PDO::PARAM_INT);
+            $stmt->bindValue(':categoria', $categoriaId, PDO::PARAM_STR);
             $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
@@ -215,26 +235,30 @@ class Producto {
      * @param int $limit Cantidad de productos a obtener
      * @return array Lista de productos relacionados
      */
-    public function obtenerRelacionados($productoId, $categoriaId, $limit = 4) {
+    public function obtenerRelacionados($productoId, $categoria, $limit = 4) {
         $sql = "SELECT
                     id,
-                    codigo,
+                    codigo_producto,
                     nombre,
                     descripcion,
                     precio,
                     stock,
                     imagen,
-                    categoria_id
+                    imagen_modelo,
+                    categoria,
+                    tipo,
+                    talla,
+                    color
                 FROM productos
                 WHERE activo = 1
-                  AND categoria_id = :categoria_id
+                  AND categoria = :categoria
                   AND id != :producto_id
                 ORDER BY RAND()
                 LIMIT :limit";
 
         try {
             $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->bindValue(':categoria_id', $categoriaId, PDO::PARAM_INT);
+            $stmt->bindValue(':categoria', $categoria, PDO::PARAM_STR);
             $stmt->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();

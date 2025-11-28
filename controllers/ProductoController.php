@@ -77,7 +77,7 @@ class ProductoController {
         // Obtener productos relacionados
         $productosRelacionados = $this->productoModel->obtenerRelacionados(
             $id,
-            $producto['categoria_id']
+            $producto['categoria']
         );
 
         // Preparar datos para la vista
