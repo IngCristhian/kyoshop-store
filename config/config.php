@@ -7,8 +7,11 @@
 // URL base de la aplicación (desde variable de entorno)
 define('APP_URL', getenv('APP_URL') ?: 'http://localhost:8001');
 
-// URL del sistema admin (para referencias)
-define('ADMIN_URL', 'https://inventory.kyoshop.co');
+// URL del sistema admin (para referencias y carga de imágenes)
+define('ADMIN_URL', getenv('ADMIN_URL') ?: 'https://inventory.kyoshop.co');
+
+// URL de imágenes (apunta al sistema de inventario donde están almacenadas)
+define('IMAGES_URL', ADMIN_URL . '/uploads');
 
 // Configuración de sesiones
 ini_set('session.cookie_httponly', 1);

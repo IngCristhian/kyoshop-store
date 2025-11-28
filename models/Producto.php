@@ -281,8 +281,10 @@ class Producto {
             return APP_URL . '/assets/img/producto-placeholder.jpg';
         }
 
-        // Asumiendo que las imágenes están en /uploads/productos/
-        $rutaImagen = APP_URL . '/uploads/productos/' . $imagen;
+        // Las imágenes están en el servidor del inventario (compartido)
+        // IMAGES_URL apunta a https://inventory.kyoshop.co/uploads (prod)
+        // o https://dev.inventory.kyoshop.co/uploads (dev)
+        $rutaImagen = IMAGES_URL . '/' . $imagen;
 
         return $rutaImagen;
     }
