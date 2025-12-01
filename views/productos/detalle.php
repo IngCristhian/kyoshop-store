@@ -59,7 +59,7 @@
 
                     <!-- Product Code -->
                     <p class="product-code">
-                        <i class="bi bi-upc"></i> SKU: <?= sanitize($producto['codigo']) ?>
+                        <i class="bi bi-upc"></i> SKU: <?= sanitize($producto['codigo_producto']) ?>
                     </p>
 
                     <!-- Price Section -->
@@ -142,7 +142,7 @@
                             <div class="unavailable-section">
                                 <p class="unavailable-text">Este producto está agotado</p>
                                 <a
-                                    href="https://wa.me/<?= str_replace('+', '', WHATSAPP_NUMBER) ?>?text=<?= urlencode("Hola, me interesa el producto: " . $producto['nombre'] . " (Código: " . $producto['codigo'] . "). ¿Cuándo estará disponible?") ?>"
+                                    href="https://wa.me/<?= str_replace('+', '', WHATSAPP_NUMBER) ?>?text=<?= urlencode("Hola, me interesa el producto: " . $producto['nombre'] . " (Código: " . $producto['codigo_producto'] . "). ¿Cuándo estará disponible?") ?>"
                                     target="_blank"
                                     class="btn-detail-whatsapp"
                                 >
@@ -261,7 +261,7 @@ function comprarPorWhatsApp(producto) {
     const mensaje = `Hola, me interesa este producto:
 
 📦 *${producto.nombre}*
-🔢 Código: ${producto.codigo}
+🔢 Código: ${producto.codigo_producto}
 💵 Precio unitario: ${formatPriceJS(producto.precio)}
 📊 Cantidad: ${cantidad}
 💰 Total: ${formatPriceJS(total)}
