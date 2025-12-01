@@ -102,6 +102,7 @@ class Producto {
      */
     public function buscar($termino, $page = 1, $perPage = ITEMS_PER_PAGE) {
         $offset = ($page - 1) * $perPage;
+        $terminoBusqueda = "%{$termino}%";
 
         $sql = "SELECT
                     id,
@@ -121,16 +122,13 @@ class Producto {
                     fecha_creacion
                 FROM productos
                 WHERE activo = 1
-                  AND (nombre LIKE :termino OR descripcion LIKE :termino)
+                  AND (nombre LIKE ? OR descripcion LIKE ?)
                 ORDER BY fecha_creacion DESC
-                LIMIT :limit OFFSET :offset";
+                LIMIT ? OFFSET ?";
 
         try {
             $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->bindValue(':termino', "%{$termino}%", PDO::PARAM_STR);
-            $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([$terminoBusqueda, $terminoBusqueda, $perPage, $offset]);
 
             return $stmt->fetchAll();
         } catch (PDOException $e) {

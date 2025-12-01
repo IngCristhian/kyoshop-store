@@ -52,8 +52,8 @@
 <!-- Main Container -->
 <div class="container py-5">
     <!-- Search Bar -->
-    <div class="search-section mb-5 animate-on-scroll">
-        <form method="GET" action="<?= APP_URL ?>/productos" class="modern-search-form">
+    <div class="search-section mb-5 animate-on-scroll" id="search-section">
+        <form method="GET" action="<?= APP_URL ?>/productos#search-section" class="modern-search-form">
             <div class="search-input-wrapper">
                 <i class="bi bi-search search-icon"></i>
                 <input
