@@ -21,8 +21,15 @@ require_once __DIR__ . '/controllers/ProductoController.php';
 // Obtener la ruta solicitada
 $request_uri = $_SERVER['REQUEST_URI'];
 $script_name = dirname($_SERVER['SCRIPT_NAME']);
-$path = str_replace($script_name, '', $request_uri);
-$path = parse_url($path, PHP_URL_PATH);
+
+// Parse URL first to remove query string
+$path = parse_url($request_uri, PHP_URL_PATH);
+
+// Remove script name from path if not root
+if ($script_name !== '/' && strpos($path, $script_name) === 0) {
+    $path = substr($path, strlen($script_name));
+}
+
 $path = trim($path, '/');
 
 // Routing
