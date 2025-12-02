@@ -173,7 +173,7 @@
                             </li>
                             <li>
                                 <i class="bi bi-geo-alt"></i>
-                                <span>Otras ciudades: <?= formatPrice(SHIPPING_COST_OTHER) ?></span>
+                                <span>Otras ciudades: $16.000 - $20.000</span>
                             </li>
                         </ul>
                     </div>

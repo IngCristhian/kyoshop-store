@@ -53,3 +53,8 @@ deploy.sh
 *.sql.bak
 backups/
 uploads/
+
+# Ignorar documentación con información sensible
+CLAUDE.md
+GEMINI.md
+PLAN_*.md
