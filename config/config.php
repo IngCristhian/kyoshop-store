@@ -54,9 +54,9 @@ define('CART_EXPIRATION_DAYS', 7);
 define('TAX_RATE', 0.19); // 19%
 
 // Costos de envío (puede ser dinámico después)
-define('SHIPPING_COST_MEDELLIN', 10000); // $10.000 COP
-define('SHIPPING_COST_BOGOTA', 15000);   // $15.000 COP
-define('SHIPPING_COST_OTHER', 20000);    // $20.000 COP
+define('SHIPPING_COST_MEDELLIN', 16000); // $16.000 COP
+define('SHIPPING_COST_BOGOTA', 10000);   // $10.000 COP
+define('SHIPPING_COST_OTHER', 16000);    // $16.000 - $20.000 COP (base: $16.000)
 define('FREE_SHIPPING_THRESHOLD', 150000); // Envío gratis sobre $150.000
 
 // Estados de pedidos
