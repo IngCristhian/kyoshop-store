@@ -701,7 +701,9 @@
 
         const whatsappNumber = '<?= str_replace('+', '', WHATSAPP_NUMBER) ?>';
         const whatsappMessage = encodeURIComponent(`Hola, me interesa este producto: ${producto.nombre}`);
-        const imageUrl = producto.imagen || '<?= APP_URL ?>/assets/images/product-placeholder.jpg';
+        const imageUrl = producto.imagen
+            ? '<?= IMAGES_URL ?>/' + producto.imagen
+            : '<?= APP_URL ?>/assets/img/producto-placeholder.jpg';
 
         return `
             <div class="product-card-modern animate-on-scroll" style="animation-delay: ${index * 0.05}s">
