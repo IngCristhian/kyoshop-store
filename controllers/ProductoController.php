@@ -131,6 +131,39 @@ class ProductoController {
     }
 
     /**
+     * API endpoint para cargar productos paginados (para scroll infinito)
+     */
+    public function obtenerProductosAPI() {
+        // Set JSON header
+        header('Content-Type: application/json');
+
+        // Obtener parámetros
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $categoriaId = isset($_GET['categoria']) ? (int)$_GET['categoria'] : null;
+
+        // Obtener productos según filtros
+        if (!empty($search)) {
+            $productos = $this->productoModel->buscar($search, $page);
+        } elseif ($categoriaId) {
+            $productos = $this->productoModel->obtenerPorCategoria($categoriaId, $page);
+        } else {
+            $productos = $this->productoModel->obtenerTodos($page);
+        }
+
+        // Preparar respuesta
+        $response = [
+            'success' => true,
+            'page' => $page,
+            'productos' => $productos,
+            'has_more' => count($productos) === ITEMS_PER_PAGE
+        ];
+
+        echo json_encode($response);
+        exit;
+    }
+
+    /**
      * Redirigir a página 404
      */
     private function redirect404() {
