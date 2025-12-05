@@ -190,44 +190,14 @@
             <?php endforeach; ?>
         </div>
 
-        <!-- Pagination -->
-        <?php if ($totalPages > 1): ?>
-            <nav class="modern-pagination" aria-label="Paginación de productos">
-                <ul class="pagination-list">
-                    <!-- Previous -->
-                    <li class="pagination-item">
-                        <a class="pagination-link <?= $page <= 1 ? 'disabled' : '' ?>"
-                           href="<?= $page > 1 ? APP_URL . '/productos?page=' . ($page - 1) . (!empty($search) ? '&search=' . urlencode($search) : '') : '#' ?>">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
+        <!-- Scroll Infinito: Loading Indicator -->
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p>Cargando más productos...</p>
+        </div>
 
-                    <!-- Page Numbers -->
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <?php if ($i == $page || $i == 1 || $i == $totalPages || abs($i - $page) <= 1): ?>
-                            <li class="pagination-item">
-                                <a class="pagination-link <?= $i == $page ? 'active' : '' ?>"
-                                   href="<?= APP_URL ?>/productos?page=<?= $i ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
-                                    <?= $i ?>
-                                </a>
-                            </li>
-                        <?php elseif (abs($i - $page) == 2): ?>
-                            <li class="pagination-item">
-                                <span class="pagination-dots">...</span>
-                            </li>
-                        <?php endif; ?>
-                    <?php endfor; ?>
-
-                    <!-- Next -->
-                    <li class="pagination-item">
-                        <a class="pagination-link <?= $page >= $totalPages ? 'disabled' : '' ?>"
-                           href="<?= $page < $totalPages ? APP_URL . '/productos?page=' . ($page + 1) . (!empty($search) ? '&search=' . urlencode($search) : '') : '#' ?>">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        <?php endif; ?>
+        <!-- Scroll Infinito: Sentinel Element -->
+        <div id="scroll-sentinel" style="height: 1px;"></div>
     <?php endif; ?>
 </div>
 
@@ -616,62 +586,36 @@
 }
 
 /* ========================================
-   MODERN PAGINATION
+   LOADING INDICATOR (Scroll Infinito)
    ======================================== */
-.modern-pagination {
-    margin-top: 4rem;
+.loading-indicator {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    padding: 3rem 2rem;
+    gap: 1rem;
 }
 
-.pagination-list {
-    display: flex;
-    gap: 0.5rem;
-    list-style: none;
-    padding: 0;
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--gray-200);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-indicator p {
+    color: var(--gray-600);
+    font-weight: 500;
     margin: 0;
-}
-
-.pagination-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 44px;
-    height: 44px;
-    padding: 0 1rem;
-    border-radius: var(--radius-md);
-    background: white;
-    color: var(--gray-700);
-    text-decoration: none;
-    font-weight: 600;
-    transition: all var(--transition-base);
-    border: 2px solid var(--gray-200);
-}
-
-.pagination-link:not(.disabled):hover {
-    background: var(--gray-100);
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: translateY(-2px);
-}
-
-.pagination-link.active {
-    background: var(--gradient-accent);
-    color: white;
-    border-color: transparent;
-}
-
-.pagination-link.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.pagination-dots {
-    display: flex;
-    align-items: center;
-    padding: 0 0.5rem;
-    color: var(--gray-400);
 }
 
 /* ========================================
@@ -708,3 +652,195 @@
     }
 }
 </style>
+
+<script>
+// SCROLL INFINITO CON INTERSECTION OBSERVER
+(function() {
+    // Configuración
+    const productsGrid = document.querySelector('.products-grid');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const scrollSentinel = document.getElementById('scroll-sentinel');
+
+    // Si no hay productos, no inicializar scroll infinito
+    if (!productsGrid || !scrollSentinel) {
+        return;
+    }
+
+    // Estado
+    let currentPage = <?= $page ?? 1 ?>;
+    let isLoading = false;
+    let hasMore = true;
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Función para crear una tarjeta de producto
+    function createProductCard(producto, index) {
+        const stockBadge = () => {
+            if (producto.stock <= 0) {
+                return `<span class="product-badge badge-danger"><i class="bi bi-x-circle"></i> Agotado</span>`;
+            } else if (producto.stock <= 5) {
+                return `<span class="product-badge badge-warning"><i class="bi bi-exclamation-circle"></i> Últimas ${producto.stock}</span>`;
+            } else if (producto.stock <= 10) {
+                return `<span class="product-badge badge-new"><i class="bi bi-fire"></i> Popular</span>`;
+            }
+            return '';
+        };
+
+        const addToCartButton = producto.stock > 0
+            ? `<button type="button" class="btn-add-cart btn-add-to-cart"
+                       data-product-id="${producto.id}"
+                       data-product-name="${escapeHtml(producto.nombre)}"
+                       data-product-price="${producto.precio}"
+                       title="Agregar al carrito">
+                   <i class="bi bi-bag-plus"></i>
+                   <span>Agregar</span>
+               </button>`
+            : `<button type="button" class="btn-add-cart btn-disabled" disabled>
+                   <i class="bi bi-x-circle"></i>
+                   <span>Agotado</span>
+               </button>`;
+
+        const whatsappNumber = '<?= str_replace('+', '', WHATSAPP_NUMBER) ?>';
+        const whatsappMessage = encodeURIComponent(`Hola, me interesa este producto: ${producto.nombre}`);
+        const imageUrl = producto.imagen || '<?= APP_URL ?>/assets/images/product-placeholder.jpg';
+
+        return `
+            <div class="product-card-modern animate-on-scroll" style="animation-delay: ${index * 0.05}s">
+                <div class="product-image-wrapper">
+                    <a href="<?= APP_URL ?>/producto/${producto.id}" class="product-image-link">
+                        <img src="${imageUrl}"
+                             alt="${escapeHtml(producto.nombre)}"
+                             class="product-image"
+                             loading="lazy">
+                        <div class="product-overlay">
+                            <span class="quick-view">
+                                <i class="bi bi-eye"></i> Vista rápida
+                            </span>
+                        </div>
+                    </a>
+                    ${stockBadge()}
+                    <div class="product-quick-actions">
+                        <button class="quick-action-btn" title="Agregar a favoritos">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                        <a href="https://wa.me/${whatsappNumber}?text=${whatsappMessage}"
+                           target="_blank"
+                           class="quick-action-btn whatsapp-btn"
+                           title="Consultar por WhatsApp">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">
+                        <a href="<?= APP_URL ?>/producto/${producto.id}">
+                            ${escapeHtml(producto.nombre)}
+                        </a>
+                    </h3>
+                    <p class="product-description">
+                        ${escapeHtml((producto.descripcion || '').substring(0, 60))}${producto.descripcion && producto.descripcion.length > 60 ? '...' : ''}
+                    </p>
+                    <div class="product-footer">
+                        <div class="product-price-section">
+                            <span class="product-price">
+                                $${formatPrice(producto.precio)}
+                            </span>
+                        </div>
+                        ${addToCartButton}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Función auxiliar para escapar HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Función auxiliar para formatear precio
+    function formatPrice(price) {
+        return new Intl.NumberFormat('es-CO', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(price);
+    }
+
+    // Función para cargar más productos
+    async function loadMoreProducts() {
+        if (isLoading || !hasMore) {
+            return;
+        }
+
+        isLoading = true;
+        loadingIndicator.style.display = 'flex';
+
+        try {
+            // Incrementar página
+            currentPage++;
+
+            // Preparar URL con parámetros
+            const apiUrl = new URL('<?= APP_URL ?>/api/productos');
+            apiUrl.searchParams.set('page', currentPage);
+
+            // Agregar parámetros de búsqueda si existen
+            if (searchParams.has('search')) {
+                apiUrl.searchParams.set('search', searchParams.get('search'));
+            }
+            if (searchParams.has('categoria')) {
+                apiUrl.searchParams.set('categoria', searchParams.get('categoria'));
+            }
+
+            // Hacer petición
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            if (data.success && data.productos && data.productos.length > 0) {
+                // Agregar productos al grid
+                data.productos.forEach((producto, index) => {
+                    const productHTML = createProductCard(producto, index);
+                    productsGrid.insertAdjacentHTML('beforeend', productHTML);
+                });
+
+                // Actualizar estado
+                hasMore = data.has_more;
+
+                // Trigger animation para nuevas tarjetas
+                const newCards = productsGrid.querySelectorAll('.product-card-modern');
+                newCards.forEach(card => {
+                    if (!card.classList.contains('animated')) {
+                        card.classList.add('animated');
+                    }
+                });
+            } else {
+                hasMore = false;
+            }
+        } catch (error) {
+            console.error('Error cargando productos:', error);
+            hasMore = false;
+        } finally {
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+        }
+    }
+
+    // Configurar Intersection Observer
+    const observerOptions = {
+        root: null,
+        rootMargin: '200px', // Cargar cuando esté a 200px del sentinel
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && hasMore && !isLoading) {
+                loadMoreProducts();
+            }
+        });
+    }, observerOptions);
+
+    // Observar el elemento sentinel
+    observer.observe(scrollSentinel);
+})();
+</script>

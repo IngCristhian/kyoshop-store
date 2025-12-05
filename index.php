@@ -46,6 +46,12 @@ switch(true) {
         $controller->index();
         break;
 
+    case preg_match('/^api\/productos$/', $path):
+        // API endpoint para scroll infinito
+        $controller = new ProductoController();
+        $controller->obtenerProductosAPI();
+        break;
+
     case preg_match('/^producto\/(\d+)$/', $path, $matches):
         // Detalle de producto
         $productId = (int)$matches[1];
