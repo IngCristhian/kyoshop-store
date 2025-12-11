@@ -190,14 +190,99 @@
             <?php endforeach; ?>
         </div>
 
-        <!-- Scroll Infinito: Loading Indicator -->
-        <div id="loading-indicator" class="loading-indicator" style="display: none;">
-            <div class="spinner"></div>
-            <p>Cargando más productos...</p>
-        </div>
+        <!-- Paginación -->
+        <?php if ($totalPages > 1): ?>
+            <nav aria-label="Navegación de productos" class="pagination-nav">
+                <ul class="pagination-list">
+                    <!-- Primera página -->
+                    <?php if ($page > 1): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=1<?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link"
+                               aria-label="Primera página">
+                                <i class="bi bi-chevron-bar-left"></i>
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
-        <!-- Scroll Infinito: Sentinel Element -->
-        <div id="scroll-sentinel" style="height: 1px;"></div>
+                    <!-- Página anterior -->
+                    <?php if ($page > 1): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=<?= $page - 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link"
+                               aria-label="Página anterior">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Números de página -->
+                    <?php
+                    $startPage = max(1, $page - 2);
+                    $endPage = min($totalPages, $page + 2);
+
+                    // Mostrar primera página si no está en rango
+                    if ($startPage > 1): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=1<?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link">1</a>
+                        </li>
+                        <?php if ($startPage > 2): ?>
+                            <li><span class="pagination-dots">...</span></li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <!-- Páginas cercanas -->
+                    <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=<?= $i ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link <?= $i === $page ? 'active' : '' ?>"
+                               <?= $i === $page ? 'aria-current="page"' : '' ?>>
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <!-- Mostrar última página si no está en rango -->
+                    <?php if ($endPage < $totalPages): ?>
+                        <?php if ($endPage < $totalPages - 1): ?>
+                            <li><span class="pagination-dots">...</span></li>
+                        <?php endif; ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=<?= $totalPages ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link"><?= $totalPages ?></a>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Página siguiente -->
+                    <?php if ($page < $totalPages): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=<?= $page + 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link"
+                               aria-label="Página siguiente">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <!-- Última página -->
+                    <?php if ($page < $totalPages): ?>
+                        <li>
+                            <a href="<?= APP_URL ?>/productos?page=<?= $totalPages ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= $categoriaId ? '&categoria=' . $categoriaId : '' ?>#productos"
+                               class="pagination-link"
+                               aria-label="Última página">
+                                <i class="bi bi-chevron-bar-right"></i>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+
+                <!-- Info de página actual -->
+                <div class="pagination-info">
+                    Página <?= $page ?> de <?= $totalPages ?>
+                </div>
+            </nav>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 
@@ -586,36 +671,73 @@
 }
 
 /* ========================================
-   LOADING INDICATOR (Scroll Infinito)
+   PAGINACIÓN
    ======================================== */
-.loading-indicator {
+.pagination-nav {
+    margin-top: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid var(--gray-200);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.loading-indicator p {
-    color: var(--gray-600);
-    font-weight: 500;
+.pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
     margin: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pagination-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-md);
+    background: white;
+    color: var(--gray-700);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.938rem;
+    transition: all var(--transition-base);
+    border: 2px solid var(--gray-200);
+}
+
+.pagination-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-link.active {
+    background: var(--gradient-accent);
+    color: white;
+    border-color: transparent;
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-link.active:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.pagination-dots {
+    color: var(--gray-400);
+    padding: 0 0.5rem;
+    font-weight: 700;
+}
+
+.pagination-info {
+    color: var(--gray-600);
+    font-size: 0.938rem;
+    font-weight: 500;
 }
 
 /* ========================================
@@ -650,197 +772,20 @@
     .modern-search-form {
         flex-direction: column;
     }
+
+    .pagination-list {
+        gap: 0.375rem;
+    }
+
+    .pagination-link {
+        min-width: 38px;
+        height: 38px;
+        font-size: 0.875rem;
+        padding: 0 0.5rem;
+    }
+
+    .pagination-info {
+        font-size: 0.875rem;
+    }
 }
 </style>
-
-<script>
-// SCROLL INFINITO CON INTERSECTION OBSERVER
-(function() {
-    // Configuración
-    const productsGrid = document.querySelector('.products-grid');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    const scrollSentinel = document.getElementById('scroll-sentinel');
-
-    // Si no hay productos, no inicializar scroll infinito
-    if (!productsGrid || !scrollSentinel) {
-        return;
-    }
-
-    // Estado
-    let currentPage = <?= $page ?? 1 ?>;
-    let isLoading = false;
-    let hasMore = true;
-    const searchParams = new URLSearchParams(window.location.search);
-
-    // Función para crear una tarjeta de producto
-    function createProductCard(producto, index) {
-        const stockBadge = () => {
-            if (producto.stock <= 0) {
-                return `<span class="product-badge badge-danger"><i class="bi bi-x-circle"></i> Agotado</span>`;
-            } else if (producto.stock <= 5) {
-                return `<span class="product-badge badge-warning"><i class="bi bi-exclamation-circle"></i> Últimas ${producto.stock}</span>`;
-            } else if (producto.stock <= 10) {
-                return `<span class="product-badge badge-new"><i class="bi bi-fire"></i> Popular</span>`;
-            }
-            return '';
-        };
-
-        const addToCartButton = producto.stock > 0
-            ? `<button type="button" class="btn-add-cart btn-add-to-cart"
-                       data-product-id="${producto.id}"
-                       data-product-name="${escapeHtml(producto.nombre)}"
-                       data-product-price="${producto.precio}"
-                       title="Agregar al carrito">
-                   <i class="bi bi-bag-plus"></i>
-                   <span>Agregar</span>
-               </button>`
-            : `<button type="button" class="btn-add-cart btn-disabled" disabled>
-                   <i class="bi bi-x-circle"></i>
-                   <span>Agotado</span>
-               </button>`;
-
-        const whatsappNumber = '<?= str_replace('+', '', WHATSAPP_NUMBER) ?>';
-        const whatsappMessage = encodeURIComponent(`Hola, me interesa este producto: ${producto.nombre}`);
-        const imageUrl = producto.imagen || '<?= APP_URL ?>/assets/images/product-placeholder.jpg';
-
-        return `
-            <div class="product-card-modern animate-on-scroll" style="animation-delay: ${index * 0.05}s">
-                <div class="product-image-wrapper">
-                    <a href="<?= APP_URL ?>/producto/${producto.id}" class="product-image-link">
-                        <img src="${imageUrl}"
-                             alt="${escapeHtml(producto.nombre)}"
-                             class="product-image"
-                             loading="lazy">
-                        <div class="product-overlay">
-                            <span class="quick-view">
-                                <i class="bi bi-eye"></i> Vista rápida
-                            </span>
-                        </div>
-                    </a>
-                    ${stockBadge()}
-                    <div class="product-quick-actions">
-                        <button class="quick-action-btn" title="Agregar a favoritos">
-                            <i class="bi bi-heart"></i>
-                        </button>
-                        <a href="https://wa.me/${whatsappNumber}?text=${whatsappMessage}"
-                           target="_blank"
-                           class="quick-action-btn whatsapp-btn"
-                           title="Consultar por WhatsApp">
-                            <i class="bi bi-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">
-                        <a href="<?= APP_URL ?>/producto/${producto.id}">
-                            ${escapeHtml(producto.nombre)}
-                        </a>
-                    </h3>
-                    <p class="product-description">
-                        ${escapeHtml((producto.descripcion || '').substring(0, 60))}${producto.descripcion && producto.descripcion.length > 60 ? '...' : ''}
-                    </p>
-                    <div class="product-footer">
-                        <div class="product-price-section">
-                            <span class="product-price">
-                                $${formatPrice(producto.precio)}
-                            </span>
-                        </div>
-                        ${addToCartButton}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // Función auxiliar para escapar HTML
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    // Función auxiliar para formatear precio
-    function formatPrice(price) {
-        return new Intl.NumberFormat('es-CO', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(price);
-    }
-
-    // Función para cargar más productos
-    async function loadMoreProducts() {
-        if (isLoading || !hasMore) {
-            return;
-        }
-
-        isLoading = true;
-        loadingIndicator.style.display = 'flex';
-
-        try {
-            // Incrementar página
-            currentPage++;
-
-            // Preparar URL con parámetros
-            const apiUrl = new URL('<?= APP_URL ?>/api/productos');
-            apiUrl.searchParams.set('page', currentPage);
-
-            // Agregar parámetros de búsqueda si existen
-            if (searchParams.has('search')) {
-                apiUrl.searchParams.set('search', searchParams.get('search'));
-            }
-            if (searchParams.has('categoria')) {
-                apiUrl.searchParams.set('categoria', searchParams.get('categoria'));
-            }
-
-            // Hacer petición
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-
-            if (data.success && data.productos && data.productos.length > 0) {
-                // Agregar productos al grid
-                data.productos.forEach((producto, index) => {
-                    const productHTML = createProductCard(producto, index);
-                    productsGrid.insertAdjacentHTML('beforeend', productHTML);
-                });
-
-                // Actualizar estado
-                hasMore = data.has_more;
-
-                // Trigger animation para nuevas tarjetas
-                const newCards = productsGrid.querySelectorAll('.product-card-modern');
-                newCards.forEach(card => {
-                    if (!card.classList.contains('animated')) {
-                        card.classList.add('animated');
-                    }
-                });
-            } else {
-                hasMore = false;
-            }
-        } catch (error) {
-            console.error('Error cargando productos:', error);
-            hasMore = false;
-        } finally {
-            isLoading = false;
-            loadingIndicator.style.display = 'none';
-        }
-    }
-
-    // Configurar Intersection Observer
-    const observerOptions = {
-        root: null,
-        rootMargin: '200px', // Cargar cuando esté a 200px del sentinel
-        threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && hasMore && !isLoading) {
-                loadMoreProducts();
-            }
-        });
-    }, observerOptions);
-
-    // Observar el elemento sentinel
-    observer.observe(scrollSentinel);
-})();
-</script>

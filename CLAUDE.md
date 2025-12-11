@@ -279,21 +279,8 @@ window.open(`https://wa.me/57300XXXXXXX?text=${encodeURIComponent(message)}`);
 
 ## Development Commands
 
-### Starting Local Environment
-```bash
-# Start PHP development server
-cd /path/to/kyoshop-store
-php -S localhost:8001
-
-# Access application
-open http://localhost:8001
-```
-
-### Database Access
-```bash
-# Connect to shared database (READ-ONLY)
-mysql -h localhost -u kyosankk_store -p kyosankk_inventory
-```
+### Testing on Development Server
+All testing should be done on the development server at https://dev.kyoshop.co after pushing to the `develop` branch.
 
 ## Deployment
 

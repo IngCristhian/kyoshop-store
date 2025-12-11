@@ -202,6 +202,53 @@ class Producto {
     }
 
     /**
+     * Contar total de productos en búsqueda
+     *
+     * @param string $termino Término de búsqueda
+     * @return int Total de productos encontrados
+     */
+    public function contarTotalBusqueda($termino) {
+        $terminoBusqueda = "%{$termino}%";
+        $sql = "SELECT COUNT(*) as total
+                FROM productos
+                WHERE activo = 1
+                  AND (nombre LIKE ? OR descripcion LIKE ?)";
+
+        try {
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->execute([$terminoBusqueda, $terminoBusqueda]);
+            $result = $stmt->fetch();
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Error en contarTotalBusqueda(): " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Contar total de productos por categoría
+     *
+     * @param int $categoriaId ID de la categoría
+     * @return int Total de productos en la categoría
+     */
+    public function contarTotalCategoria($categoriaId) {
+        $sql = "SELECT COUNT(*) as total
+                FROM productos
+                WHERE activo = 1 AND categoria = :categoria";
+
+        try {
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->bindValue(':categoria', $categoriaId, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch();
+            return (int)$result['total'];
+        } catch (PDOException $e) {
+            error_log("Error en contarTotalCategoria(): " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
      * Verificar si un producto tiene stock disponible
      *
      * @param int $id ID del producto
