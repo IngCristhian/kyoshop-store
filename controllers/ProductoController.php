@@ -26,10 +26,10 @@ class ProductoController {
         // Obtener productos según filtros
         if (!empty($search)) {
             $productos = $this->productoModel->buscar($search, $page);
-            $totalProductos = count($productos); // Simplificado, idealmente contar con query
+            $totalProductos = $this->productoModel->contarTotalBusqueda($search);
         } elseif ($categoriaId) {
             $productos = $this->productoModel->obtenerPorCategoria($categoriaId, $page);
-            $totalProductos = count($productos);
+            $totalProductos = $this->productoModel->contarTotalCategoria($categoriaId);
         } else {
             $productos = $this->productoModel->obtenerTodos($page);
             $totalProductos = $this->productoModel->contarTotal();
@@ -47,6 +47,7 @@ class ProductoController {
             'productos' => $productos,
             'page' => $page,
             'totalPages' => $totalPages,
+            'totalProductos' => $totalProductos,
             'search' => $search,
             'categoriaId' => $categoriaId
         ]);
