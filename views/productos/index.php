@@ -155,6 +155,16 @@
                             </a>
                         </h3>
 
+                        <!-- Product Meta (Talla) -->
+                        <?php if (!empty($producto['talla'])): ?>
+                            <div class="product-meta">
+                                <span class="product-size">
+                                    <i class="bi bi-rulers"></i>
+                                    Talla: <?= sanitize($producto['talla']) ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
+
                         <p class="product-description">
                             <?= sanitize(substr($producto['descripcion'], 0, 60)) ?><?= strlen($producto['descripcion']) > 60 ? '...' : '' ?>
                         </p>
@@ -567,6 +577,29 @@
 }
 
 .product-name a:hover {
+    color: var(--accent);
+}
+
+/* Product Meta */
+.product-meta {
+    margin-bottom: 0.75rem;
+}
+
+.product-size {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: var(--gray-700);
+    border-radius: var(--radius-md);
+    font-size: 0.813rem;
+    font-weight: 600;
+    border: 1px solid var(--gray-200);
+}
+
+.product-size i {
+    font-size: 0.875rem;
     color: var(--accent);
 }
 

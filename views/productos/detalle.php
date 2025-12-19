@@ -62,6 +62,24 @@
                         <i class="bi bi-upc"></i> SKU: <?= sanitize($producto['codigo_producto']) ?>
                     </p>
 
+                    <!-- Product Attributes -->
+                    <?php if (!empty($producto['talla']) || !empty($producto['color'])): ?>
+                        <div class="product-attributes">
+                            <?php if (!empty($producto['talla'])): ?>
+                                <span class="attribute-badge">
+                                    <i class="bi bi-rulers"></i>
+                                    <strong>Talla:</strong> <?= sanitize($producto['talla']) ?>
+                                </span>
+                            <?php endif; ?>
+                            <?php if (!empty($producto['color'])): ?>
+                                <span class="attribute-badge">
+                                    <i class="bi bi-palette"></i>
+                                    <strong>Color:</strong> <?= sanitize($producto['color']) ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <!-- Price Section -->
                     <div class="price-section">
                         <div class="price-main">
@@ -417,10 +435,40 @@ function formatPriceJS(price) {
 .product-code {
     color: var(--gray-500);
     font-size: 0.875rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+/* Product Attributes */
+.product-attributes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.attribute-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 0.938rem;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+.attribute-badge i {
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+.attribute-badge strong {
+    font-weight: 700;
 }
 
 .price-section {
